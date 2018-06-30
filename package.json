@@ -1,6 +1,6 @@
 {
    "name": "generator-fewstrap",
-   "version": "1.0.2",
+   "version": "1.0.1",
    "description": "Personal generator for bootstrapping new projects",
    "keywords": [
       "yeoman-generator",
