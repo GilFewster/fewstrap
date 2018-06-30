@@ -2,6 +2,8 @@
   "name": "<%= name %>",
   "author": "<%= author %>",
   "license": "<%= license %>",
+  "repository": "",
+  "version":"0.1.0",
   "scripts": {
       "start": "node index.js"
   },

@@ -1,1 +1,1 @@
-console.log("<%= name %> by <%= author %>");
+console.log("<%= project %> by <%= author %>");

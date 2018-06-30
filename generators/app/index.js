@@ -1,6 +1,5 @@
 const Generator = require("yeoman-generator");
 const username = require("username");
-// const inquirer = require("inquirer");
 const slugify = require("slugify");
 
 module.exports = class extends Generator {
@@ -64,6 +63,12 @@ module.exports = class extends Generator {
       author,
       license
     });
+    this._copyTpl("index.js", "index.js", {
+      project,
+      author
+    });
+
+
   }
 
   _copyFile(src, dest) {
