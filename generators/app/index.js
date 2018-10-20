@@ -52,6 +52,8 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    this.log("This generator will write project files into your current directory.")
+    this.log("It does NOT create a new directory for your project.")
     this.log(this.promptAnswers);
     const { project, author, license } = this.promptAnswers;
     const dotfiles = ["eslintrc.js", "gitignore"];
