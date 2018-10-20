@@ -1,10 +1,10 @@
 {
   "name": "generator-fewstrap",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "author": "Gil Fewster",
   "license": "MIT",
   "repository": "github:GilFewster/fewstrap",
-  "description": "Personal generator for bootstrapping new projects",
+  "description": "Personal generator for bootstrapping new projects.",
   "keywords": [
     "yeoman-generator",
     "bootstrap",

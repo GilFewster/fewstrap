@@ -1,3 +1,4 @@
+const fs = require('fs');
 const Generator = require("yeoman-generator");
 const username = require("username");
 const slugify = require("slugify");
@@ -7,7 +8,13 @@ module.exports = class extends Generator {
     super(args, opts);
     this.config.save();
     this.prompts = [];
-    this.promptAnswers = {};
+    this.userPrefs = {};
+    this.dotfiles = [
+      "eslintrc.js", 
+      "gitignore",
+      "babelrc",
+      "browserslistrc",
+    ];
   }
 
   async initializing() {
@@ -36,41 +43,58 @@ module.exports = class extends Generator {
         }
       },
       {
-        type: "select",
+        type: "input",
         name: "author",
         message: "Project author",
         default: author
+      },
+      {
+        type: "list",
+        name: "newdir",
+        message: "Where do you want your project files?",
+        choices: [
+          {
+            name: "Create a new subdirectory within the current working directory",
+            value: true
+          },
+          {
+            name: "In the current working directory",
+            value: false
+          }
+        ]
       }
     ];
 
   }
 
   async prompting() {
-    return this.prompt(this.prompts).then(answers => {
-      this.promptAnswers = { ...answers };
-    });
+    return this.prompt(this.prompts)
+      .then(answers => {
+        this.userPrefs = { ...answers };
+        this.userPrefs.projectSlug = slugify(this.userPrefs.project, "-");
+      });
   }
 
   writing() {
-    this.log("This generator will write project files into your current directory.")
-    this.log("It does NOT create a new directory for your project.")
-    this.log(this.promptAnswers);
-    const { project, author, license } = this.promptAnswers;
-    const dotfiles = ["eslintrc.js", "gitignore"];
+    
+    if (this.userPrefs.newdir) {
+      const dest = `${this.contextRoot}/${this.userPrefs.projectSlug}`;
+      fs.mkdirSync(dest);
+      this.destinationRoot(dest);
+    }
 
-    dotfiles.map(fName => this._copyFile(`dotfiles/${fName}`, `.${fName}`));
+    this.log(this.destinationRoot());
 
-    this._copyTpl("_package.json", "package.json", {
-      name: slugify(project, "-"),
-      author,
-      license
-    });
-    this._copyTpl("index.js", "index.js", {
-      project,
-      author
-    });
+    fs.mkdirSync(`${this.destinationRoot()}/src`);
+    fs.mkdirSync(`${this.destinationRoot()}/src/images`);
+    fs.mkdirSync(`${this.destinationRoot()}/src/css`);
 
-
+    this.dotfiles.map(fName => this._copyFile(`dotfiles/${fName}`, `.${fName}`));
+    this._copyFile(`webpack.config.js`, `webpack.config.js`);
+    
+    this._copyTpl("_package.json", `package.json`, this.userPrefs);
+    this._copyTpl("app.js", `src/js/app.js`, this.userPrefs);
+    this._copyTpl("index.html", `src/html/index.html`, this.userPrefs);  
   }
 
   _copyFile(src, dest) {
